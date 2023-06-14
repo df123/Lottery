@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.PictureListFragment">
+    tools:context=".fragment.ResultFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_Image"
+        android:id="@+id/recycler_view_lottery_result"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></androidx.recyclerview.widget.RecyclerView>
-
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical" />
 
 </FrameLayout>

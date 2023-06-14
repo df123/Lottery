@@ -41,6 +41,8 @@ import com.example.lottery.http.LotteryService;
 import com.example.lottery.utils.ImageUtils;
 import com.example.lottery.utils.LotterSQLiteOpenUtils;
 import com.example.lottery.utils.LotteryUtils;
+import com.example.lottery.utils.PageUtils;
+import com.example.lottery.utils.RecyclerViewUtils;
 import com.google.android.gms.dynamic.IFragmentWrapper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -99,7 +101,6 @@ public class CameraFragment extends Fragment implements DatePickerDialog.OnDateS
 
     private RecyclerView recycler_view_lottery;
 
-    private RecyclerView mLotteryResultView;
     private Button btn_pick_date;
     private Button btn_save_buy_lotter;
     private EditText edit_lotter_no;
@@ -213,8 +214,7 @@ public class CameraFragment extends Fragment implements DatePickerDialog.OnDateS
             }
         });
 
-        recycler_view_lottery = initRecyclerView(inflate, R.id.recycler_view_lottery, 7, getActivity());
-        mLotteryResultView = initRecyclerView(inflate, R.id.recycler_view_lottery_result, 9, getActivity());
+        recycler_view_lottery = RecyclerViewUtils.initRecyclerView(inflate, R.id.recycler_view_lottery, 7, getActivity());
 
         return inflate;
     }
@@ -290,13 +290,6 @@ public class CameraFragment extends Fragment implements DatePickerDialog.OnDateS
 
     }
 
-    private RecyclerView initRecyclerView(View inflate, int id, int spanCount, FragmentActivity fragmentActivity) {
-        RecyclerView recyclerView = inflate.findViewById(id);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(fragmentActivity, spanCount));
-        return recyclerView;
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -353,7 +346,11 @@ public class CameraFragment extends Fragment implements DatePickerDialog.OnDateS
             }
         }
         buy_lotter_no_list.addAll(result);
-        mLotteryResultView.setAdapter(new TableAdapter(buy_lotter_no_list));
+
+        MainActivity mainActivity = (MainActivity) getContext();
+        ResultFragment resultFragment = (ResultFragment) mainActivity.getFragments()[2];
+        resultFragment.setLotteryResult(buy_lotter_no_list);
+        PageUtils.performNavigationSelection(mainActivity,2,2);
     }
 
     private void startRecognition(boolean cutPicture) {

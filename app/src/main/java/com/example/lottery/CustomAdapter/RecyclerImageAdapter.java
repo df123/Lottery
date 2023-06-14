@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.lottery.MainActivity;
 import com.example.lottery.R;
 import com.example.lottery.fragment.CameraFragment;
+import com.example.lottery.utils.PageUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.File;
@@ -89,11 +90,12 @@ public class RecyclerImageAdapter extends RecyclerView.Adapter<RecyclerImageAdap
                 @Override
                 public void onClick(View v) {
                     MainActivity mainActivity = (MainActivity) v.getContext();
-                    BottomNavigationView btn_bottom_nav = mainActivity.findViewById(R.id.btn_bottom_nav);
+//                    BottomNavigationView btn_bottom_nav = mainActivity.findViewById(R.id.btn_bottom_nav);
                     CameraFragment cameraFragment = (CameraFragment) mainActivity.getFragments()[0];
                     cameraFragment.setPictureListPaths(paths.get(getAdapterPosition()));
-                    btn_bottom_nav.setSelectedItemId(btn_bottom_nav.getMenu().getItem(1).getItemId());
-                    mainActivity.getSupportFragmentManager().beginTransaction().replace(R.id.fra_con, mainActivity.getFragments()[0]).commit();
+//                    btn_bottom_nav.setSelectedItemId(btn_bottom_nav.getMenu().getItem(1).getItemId());
+//                    mainActivity.getSupportFragmentManager().beginTransaction().replace(R.id.fra_con, mainActivity.getFragments()[0]).commit();
+                    PageUtils.performNavigationSelection(mainActivity,1,0);
                 }
             });
             imageView = itemView.findViewById(R.id.image_view_recycler);

@@ -11,4 +11,11 @@
         android:contentDescription="拍照"
         android:icon="@drawable/ic_home"
         android:title="拍照"></item>
+
+    <item
+        android:id="@+id/btn_resutl"
+        android:contentDescription="结果"
+        android:icon="@drawable/ic_list"
+        android:title="结果"></item>
+
 </menu>

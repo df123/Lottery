@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.lottery.fragment.CameraFragment;
 import com.example.lottery.fragment.PictureListFragment;
+import com.example.lottery.fragment.ResultFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -28,9 +29,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fragments = new Fragment[2];
+        fragments = new Fragment[3];
         fragments[0] = CameraFragment.newInstance("", "");
         fragments[1] = PictureListFragment.newInstance("", "");
+        fragments[2] = ResultFragment.newInstance("","");
 
         BottomNavigationView btn_bottom_nav = findViewById(R.id.btn_bottom_nav);
 
@@ -50,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
         switch (id) {
             case R.id.btn_camera:
                 fragment = fragments[0];
+                break;
+            case R.id.btn_resutl:
+                fragment = fragments[2];
                 break;
             default:
                 fragment = fragments[1];

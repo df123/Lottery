@@ -78,8 +78,6 @@ public class PictureListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View inflate = inflater.inflate(R.layout.fragment_picture_list, container, false);
-//        grid_image = inflate.findViewById(R.id.grid_image);
-//        getPicture(getContext(),grid_image);
 
         RecyclerView recyclerImage = inflate.findViewById(R.id.recycler_Image);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -100,33 +98,6 @@ public class PictureListFragment extends Fragment {
 
         return inflate;
     }
-
-//    public void setRecyclerViewLayoutManager() {
-//        int scrollPosition = 0;
-//
-//        // If a layout manager has already been set, get current scroll position.
-//        if (mRecyclerView.getLayoutManager() != null) {
-//            scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
-//                    .findFirstCompletelyVisibleItemPosition();
-//        }
-//
-//        switch (layoutManagerType) {
-//            case GRID_LAYOUT_MANAGER:
-//                mLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
-//                mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER;
-//                break;
-//            case LINEAR_LAYOUT_MANAGER:
-//                mLayoutManager = new LinearLayoutManager(getActivity());
-//                mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-//                break;
-//            default:
-//                mLayoutManager = new LinearLayoutManager(getActivity());
-//                mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-//        }
-//
-//        mRecyclerView.setLayoutManager(mLayoutManager);
-//        mRecyclerView.scrollToPosition(scrollPosition);
-//    }
 
     private String[] getPicturePaths(Context context) {
         String[] listFiles = context.getFilesDir().list((dir, name) -> {
