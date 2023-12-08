@@ -16,7 +16,7 @@ public class LotterSQLiteOpenUtils extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // 创建数据表的 SQL 语句
         String createCookieTable = "CREATE TABLE IF NOT EXISTS lottery_cookie (id INTEGER PRIMARY KEY AUTOINCREMENT, cookie TEXT)";
-        String createBuyLotteryTable = "CREATE TABLE IF NOT EXISTS buy_lottery (id INTEGER PRIMARY KEY AUTOINCREMENT, index_no INTEGER NOT NULL,number TEXT NOT NULL,color_type TEXT NOT NULL)";
+        String createBuyLotteryTable = "CREATE TABLE IF NOT EXISTS buy_lottery (id INTEGER PRIMARY KEY AUTOINCREMENT, index_no INTEGER NOT NULL,number TEXT NOT NULL,color_type TEXT NOT NULL,group_id INTEGER NOT NULL)";
 
         // 执行 SQL 语句创建数据表
         db.execSQL(createCookieTable);

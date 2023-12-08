@@ -106,6 +106,8 @@ public class CameraFragment extends Fragment implements DatePickerDialog.OnDateS
     private EditText edit_lotter_no;
     private Button btn_search;
 
+    private Button btn_update_lottery;
+
     public void setPictureListPaths(String pictureListPaths) {
         this.pictureListPaths = pictureListPaths;
     }
@@ -172,6 +174,7 @@ public class CameraFragment extends Fragment implements DatePickerDialog.OnDateS
         Button btn_add_buy_lotter = inflate.findViewById(R.id.btn_add_buy_lotter);
 
         btn_save_buy_lotter = inflate.findViewById(R.id.btn_save_buy_lotter);
+        btn_update_lottery = inflate.findViewById(R.id.btnUpdateLottery);
 
         edit_lotter_no = inflate.findViewById(R.id.edit_lotter_no);
 
@@ -248,6 +251,8 @@ public class CameraFragment extends Fragment implements DatePickerDialog.OnDateS
             return;
         }
 
+        int groupId = getGroupIdByPeriod(edit_lotter_no.getText().toString()) + 1;
+
         boolean isSaveSuccess = true;
         setDbHelper(getContext().getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -258,18 +263,23 @@ public class CameraFragment extends Fragment implements DatePickerDialog.OnDateS
                 return;
             }
 
-
             for (int i = 0; i < tableAdapter.getmData().size(); i++) {
                 ContentValues values = new ContentValues();
                 values.put("index_no", Integer.parseInt(edit_lotter_no.getText().toString()));
                 values.put("number", tableAdapter.getmData().get(i));
-                values.put("color_type", i % 7 == 0);
+                values.put("color_type", (i + 1) % 7 == 0);
+                if((i + 1) % 7 == 0){
+                    values.put("group_id", groupId++);
+                }
+                else {
+                    values.put("group_id", groupId);
+                }
                 try {
                     long insertStatus = db.insertOrThrow("buy_lottery", null, values);
                     if (insertStatus == -1) {
                         isSaveSuccess = false;
                     }
-                }catch (SQLiteException e){
+                } catch (SQLiteException e) {
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     break;
                 }
@@ -283,8 +293,7 @@ public class CameraFragment extends Fragment implements DatePickerDialog.OnDateS
             tableAdapter.getmData().clear();
             recycler_view_lottery.setAdapter(tableAdapter);
             Toast.makeText(getContext(), "保存成功", Toast.LENGTH_LONG).show();
-        }
-        else {
+        } else {
             Toast.makeText(getContext(), "保存失败！！！", Toast.LENGTH_LONG).show();
         }
 
@@ -350,7 +359,7 @@ public class CameraFragment extends Fragment implements DatePickerDialog.OnDateS
         MainActivity mainActivity = (MainActivity) getContext();
         ResultFragment resultFragment = (ResultFragment) mainActivity.getFragments()[2];
         resultFragment.setLotteryResult(buy_lotter_no_list);
-        PageUtils.performNavigationSelection(mainActivity,2,2);
+        PageUtils.performNavigationSelection(mainActivity, 2, 2);
     }
 
     private void startRecognition(boolean cutPicture) {
@@ -478,6 +487,24 @@ public class CameraFragment extends Fragment implements DatePickerDialog.OnDateS
         }
 
         Log.d(TAG, "onDateSet: " + dayEnd);
+    }
+
+    public int getGroupIdByPeriod(String period) {
+        String[] selectionArgs = new String[]{period};
+        setDbHelper(getContext().getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        if (db.isOpen()) {
+            Cursor cursor = db.rawQuery("SELECT group_id FROM buy_lottery WHERE index_no >= ? ORDER BY group_id DESC LIMIT 1;", selectionArgs);
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    int groupId = cursor.getInt(cursor.getColumnIndexOrThrow("group_id"));
+                    db.close();
+                    return groupId;
+                }
+            }
+        }
+        db.close();
+        return 0;
     }
 
 }

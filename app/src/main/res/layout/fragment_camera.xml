@@ -41,11 +41,32 @@
             android:layout_height="wrap_content"
             android:text="选择结束日期"></Button>
 
-        <Button
-            android:id="@+id/btnLottery"
+        <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="获取开奖结果"></Button>
+            android:columnCount="2">
+
+            <Button
+                android:id="@+id/btnLottery"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_columnWeight="1"
+                android:layout_marginHorizontal="1dp"
+                android:text="获取开奖结果"></Button>
+
+            <Button
+                android:id="@+id/btnUpdateLottery"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_columnWeight="1"
+                android:layout_marginHorizontal="1dp"
+                android:text="上传数据"></Button>
+
+        </GridLayout>
+
+
 
         <LinearLayout
             android:id="@+id/ll_buy_lotter_table"
