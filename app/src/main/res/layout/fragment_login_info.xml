@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="16dp"
+        android:paddingTop="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        tools:context=".MainActivity">
+
+
+        <EditText
+            android:id="@+id/editBaseUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Base Url"/>
+
+        <EditText
+            android:id="@+id/editUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editBaseUrl"
+            android:layout_marginTop="16dp"
+            android:hint="Url"/>
+
+        <EditText
+            android:id="@+id/editClientId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editUrl"
+            android:layout_marginTop="16dp"
+            android:hint="Client Id"/>
+
+        <EditText
+            android:id="@+id/editGrantType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editClientId"
+            android:layout_marginTop="16dp"
+            android:hint="grant type"/>
+
+        <EditText
+            android:id="@+id/editScope"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editGrantType"
+            android:layout_marginTop="16dp"
+            android:hint="scope"/>
+
+        <EditText
+            android:id="@+id/passwordClientSecret"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editScope"
+            android:layout_marginTop="16dp"
+            android:inputType="textPassword"
+            android:hint="Client Secret"/>
+
+        <EditText
+            android:id="@+id/editUserName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/passwordClientSecret"
+            android:layout_marginTop="16dp"
+            android:hint="user name"/>
+
+        <EditText
+            android:id="@+id/passwordUserPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editUserName"
+            android:layout_marginTop="16dp"
+            android:inputType="textPassword"
+            android:hint="Password"/>
+
+        <!-- 保存按钮 -->
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/passwordUserPassword"
+            android:layout_marginTop="16dp"
+            android:text="Save"/>
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

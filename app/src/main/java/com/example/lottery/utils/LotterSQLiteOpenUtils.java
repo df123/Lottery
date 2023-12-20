@@ -17,10 +17,12 @@ public class LotterSQLiteOpenUtils extends SQLiteOpenHelper {
         // 创建数据表的 SQL 语句
         String createCookieTable = "CREATE TABLE IF NOT EXISTS lottery_cookie (id INTEGER PRIMARY KEY AUTOINCREMENT, cookie TEXT)";
         String createBuyLotteryTable = "CREATE TABLE IF NOT EXISTS buy_lottery (id INTEGER PRIMARY KEY AUTOINCREMENT, index_no INTEGER NOT NULL,number TEXT NOT NULL,color_type TEXT NOT NULL,group_id INTEGER NOT NULL)";
+        String createClientInfo = "CREATE TABLE IF NOT EXISTS client_info (id INTEGER PRIMARY KEY AUTOINCREMENT, base_url TEXT NOT NULL,url TEXT NOT NULL,client_id TEXT NOT NULL,grant_type TEXT NOT NULL,scope TEXT NOT NULL,client_secret TEXT NOT NULL,user_name TEXT NOT NULL,user_password TEXT NOT NULL)";
 
         // 执行 SQL 语句创建数据表
         db.execSQL(createCookieTable);
         db.execSQL(createBuyLotteryTable);
+        db.execSQL(createClientInfo);
     }
 
     @Override

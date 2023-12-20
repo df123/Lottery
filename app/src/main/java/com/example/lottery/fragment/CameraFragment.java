@@ -33,10 +33,17 @@ import com.canhub.cropper.CropImageView;
 import com.example.lottery.CustomAdapter.TableAdapter;
 import com.example.lottery.MainActivity;
 import com.example.lottery.R;
+import com.example.lottery.dto.input.df.telegram.DFTelegramTokenDTO;
+import com.example.lottery.dto.input.df.telegram.lottery.ResultLotteryDto;
+import com.example.lottery.dto.input.df.telegram.lottery.UploadLotteryDto;
 import com.example.lottery.dto.input.lottery.LotteryInputDTO;
 import com.example.lottery.dto.input.lottery.ResultInputDTO;
+import com.example.lottery.entity.ClientInfo;
 import com.example.lottery.entity.Lottery;
+import com.example.lottery.http.Call.DFTelegramCall;
+import com.example.lottery.http.Call.DFUploadLotteryCall;
 import com.example.lottery.http.Call.LotterGetDataCall;
+import com.example.lottery.http.DFTelegarmService;
 import com.example.lottery.http.LotteryService;
 import com.example.lottery.utils.ImageUtils;
 import com.example.lottery.utils.LotterSQLiteOpenUtils;
@@ -56,6 +63,7 @@ import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -219,6 +227,8 @@ public class CameraFragment extends Fragment implements DatePickerDialog.OnDateS
 
         recycler_view_lottery = RecyclerViewUtils.initRecyclerView(inflate, R.id.recycler_view_lottery, 7, getActivity());
 
+        btn_update_lottery.setOnClickListener(v -> updateLottery());
+
         return inflate;
     }
 
@@ -268,10 +278,9 @@ public class CameraFragment extends Fragment implements DatePickerDialog.OnDateS
                 values.put("index_no", Integer.parseInt(edit_lotter_no.getText().toString()));
                 values.put("number", tableAdapter.getmData().get(i));
                 values.put("color_type", (i + 1) % 7 == 0);
-                if((i + 1) % 7 == 0){
+                if ((i + 1) % 7 == 0) {
                     values.put("group_id", groupId++);
-                }
-                else {
+                } else {
                     values.put("group_id", groupId);
                 }
                 try {
@@ -506,5 +515,120 @@ public class CameraFragment extends Fragment implements DatePickerDialog.OnDateS
         db.close();
         return 0;
     }
+
+    public void updateLottery() {
+
+        ClientInfo info = getClientInfo();
+
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS") // 设置日期格式
+                .setLenient()
+                .create();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(info.getBaseUrl())
+                .client(new OkHttpClient().newBuilder().followRedirects(false).build())
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        dfTelegarmService = retrofit.create(DFTelegarmService.class);
+        Call<DFTelegramTokenDTO> ssq = dfTelegarmService.getToken(info.getUrl()
+                , "Basic " + LotteryUtils.encodeToBase64(info.getClientId() + ":" + info.getClientSecret())
+                , info.getGrantType()
+                , info.getUserName()
+                , info.getUserPassword()
+                , info.getScope());
+
+        DFTelegramCall dfTelegramCall = new DFTelegramCall(getContext(), this::updateLotteryData);
+        ssq.enqueue(dfTelegramCall);
+
+    }
+
+    private DFTelegarmService dfTelegarmService;
+
+    public void updateLotteryData(String token) throws IOException {
+
+        List<UploadLotteryDto> dtos = new ArrayList<>();
+
+        String[] selectionArgs = new String[]{edit_lotter_no.getText().toString()};
+        setDbHelper(getContext().getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        if (db.isOpen()) {
+            Cursor cursor = db.rawQuery("SELECT index_no,number,color_type,group_id FROM buy_lottery WHERE index_no = ? ;", selectionArgs);
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    int groupId = cursor.getInt(cursor.getColumnIndexOrThrow("group_id"));
+                    UploadLotteryDto dto = new UploadLotteryDto();
+                    dto.setIndexNo(cursor.getInt(cursor.getColumnIndexOrThrow("index_no")));
+                    dto.setNumber(cursor.getString(cursor.getColumnIndexOrThrow("number")));
+                    dto.setColorType(cursor.getString(cursor.getColumnIndexOrThrow("color_type")));
+                    dto.setGroupId(cursor.getInt(cursor.getColumnIndexOrThrow("group_id")));
+                    dtos.add(dto);
+                    if (dtos.size() >= 2) {
+                        break;
+                    }
+                }
+            }
+        }
+        db.close();
+        if (dtos.size() <= 0) {
+            Toast.makeText(getContext(), "需要上传的数量小于等于0", Toast.LENGTH_LONG).show();
+            return;
+        }
+//        Gson gson = new GsonBuilder()
+//                .setLenient()
+//                .create();
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("https://adafap.top")
+//                .client(new OkHttpClient().newBuilder().followRedirects(false).build())
+//                .addConverterFactory(ScalarsConverterFactory.create())
+//                .addConverterFactory(GsonConverterFactory.create(gson))
+//                .build();
+//
+//         dfTelegarmService = retrofit.create(DFTelegarmService.class);
+        Call<ResultLotteryDto> ssq = dfTelegarmService.uploadLotteryBatch("api/app/lottery/lottery-batch"
+                , token
+                , dtos);
+        DFUploadLotteryCall call = new DFUploadLotteryCall(getContext());
+        ssq.enqueue(call);
+//        Response<ResultLotteryDto> response = ssq.execute();
+//        if (response.isSuccessful()) {
+//            Toast.makeText(getContext(), response.body().getId(), Toast.LENGTH_LONG).show();
+//        }
+
+
+    }
+
+    @NonNull
+    private ClientInfo getClientInfo() {
+
+        ClientInfo info = new ClientInfo();
+
+        setDbHelper(getContext().getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        if (db.isOpen()) {
+            Cursor cursor = db.rawQuery("SELECT * FROM client_info LIMIT 1;", null);
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+
+                    info.setBaseUrl(cursor.getString(cursor.getColumnIndexOrThrow("base_url")));
+                    info.setUrl(cursor.getString(cursor.getColumnIndexOrThrow("url")));
+                    info.setClientId(cursor.getString(cursor.getColumnIndexOrThrow("client_id")));
+                    info.setGrantType(cursor.getString(cursor.getColumnIndexOrThrow("grant_type")));
+                    info.setScope(cursor.getString(cursor.getColumnIndexOrThrow("scope")));
+                    info.setClientSecret(cursor.getString(cursor.getColumnIndexOrThrow("client_secret")));
+                    info.setUserName(cursor.getString(cursor.getColumnIndexOrThrow("user_name")));
+                    info.setUserPassword(cursor.getString(cursor.getColumnIndexOrThrow("user_password")));
+
+                    break;
+                }
+            }
+        }
+        db.close();
+
+        return info;
+
+    }
+
 
 }

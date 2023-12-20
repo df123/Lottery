@@ -1,5 +1,7 @@
 package com.example.lottery.utils;
 
+import android.util.Base64;
+
 import com.example.lottery.entity.Lottery;
 
 import java.util.ArrayList;
@@ -88,6 +90,12 @@ public class LotteryUtils {
                     return "-2";
             }
         }
+    }
+
+    public static String encodeToBase64(String originalString) {
+        byte[] bytes = originalString.getBytes();
+        byte[] encodedBytes = Base64.encode(bytes, Base64.DEFAULT);
+        return new String(encodedBytes);
     }
 
 }

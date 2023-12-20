@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.lottery.fragment.CameraFragment;
+import com.example.lottery.fragment.LoginInfoFragment;
 import com.example.lottery.fragment.PictureListFragment;
 import com.example.lottery.fragment.ResultFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         fragments = new Fragment[3];
         fragments[0] = CameraFragment.newInstance("", "");
-        fragments[1] = PictureListFragment.newInstance("", "");
+        fragments[1] = LoginInfoFragment.newInstance("", "");
         fragments[2] = ResultFragment.newInstance("","");
 
         BottomNavigationView btn_bottom_nav = findViewById(R.id.btn_bottom_nav);
