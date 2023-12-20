@@ -94,7 +94,7 @@ public class LotteryUtils {
 
     public static String encodeToBase64(String originalString) {
         byte[] bytes = originalString.getBytes();
-        byte[] encodedBytes = Base64.encode(bytes, Base64.DEFAULT);
+        byte[] encodedBytes = Base64.encode(bytes, Base64.NO_WRAP);
         return new String(encodedBytes);
     }
 
