@@ -564,9 +564,6 @@ public class CameraFragment extends Fragment implements DatePickerDialog.OnDateS
                     dto.setColorType(cursor.getString(cursor.getColumnIndexOrThrow("color_type")));
                     dto.setGroupId(cursor.getInt(cursor.getColumnIndexOrThrow("group_id")));
                     dtos.add(dto);
-                    if (dtos.size() >= 2) {
-                        break;
-                    }
                 }
             }
         }
@@ -575,26 +572,12 @@ public class CameraFragment extends Fragment implements DatePickerDialog.OnDateS
             Toast.makeText(getContext(), "需要上传的数量小于等于0", Toast.LENGTH_LONG).show();
             return;
         }
-//        Gson gson = new GsonBuilder()
-//                .setLenient()
-//                .create();
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("https://adafap.top")
-//                .client(new OkHttpClient().newBuilder().followRedirects(false).build())
-//                .addConverterFactory(ScalarsConverterFactory.create())
-//                .addConverterFactory(GsonConverterFactory.create(gson))
-//                .build();
-//
-//         dfTelegarmService = retrofit.create(DFTelegarmService.class);
+
         Call<ResultLotteryDto> ssq = dfTelegarmService.uploadLotteryBatch("api/app/lottery/lottery-batch"
                 , token
                 , dtos);
         DFUploadLotteryCall call = new DFUploadLotteryCall(getContext());
         ssq.enqueue(call);
-//        Response<ResultLotteryDto> response = ssq.execute();
-//        if (response.isSuccessful()) {
-//            Toast.makeText(getContext(), response.body().getId(), Toast.LENGTH_LONG).show();
-//        }
 
 
     }
